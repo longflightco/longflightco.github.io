@@ -1,0 +1,52 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build output
+dist/
+build/
+out/
+.next/
+.nuxt/
+.cache/
+.parcel-cache/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Installers / large binaries (not source)
+*.exe
+*.msi
+*.zip
+
+# Misc
+*.tmp
+
+# LongFlight source material & docs — NOT deployed to the live site
+Flightmode prod. images (both hoodies)/
+summer clothes product (model) shots/
+Screenshot *.png
+screencapture-*.png
+LongFlight main logo.png
+CLAUDEwebdesign copy.md
