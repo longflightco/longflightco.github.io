@@ -650,7 +650,7 @@ button.link-underline { border: 0; background-color: transparent; padding: 0 0 2
 @media (prefers-reduced-motion: no-preference) {
   body.page-fade { animation: pagein 0.7s var(--ease) both; }
 }
-@keyframes pagein { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes pagein { from { opacity: 0; } to { opacity: 1; } }
 
 /* If scripting is unavailable, reveal-on-scroll content must still show. */
 @media (scripting: none) {
