@@ -437,4 +437,18 @@
     }, { threshold: 0 });
     barObserver.observe(buybar);
   }
+
+  /* ---------- Contact form → opens a pre-filled email ---------- */
+  var contactForm = document.querySelector(".contact form");
+  if (contactForm) {
+    contactForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var val = function (id) { var el = document.getElementById(id); return el ? el.value.trim() : ""; };
+      var name = val("c-name"), email = val("c-email"), phone = val("c-phone"), msg = val("c-msg");
+      var subject = "Website enquiry" + (name ? " from " + name : "");
+      var body = "Name: " + name + "\nEmail: " + email + (phone ? "\nPhone: " + phone : "") + "\n\nMessage:\n" + msg;
+      window.location.href = "mailto:longflightinquiries@gmail.com?subject=" +
+        encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+    });
+  }
 })();
