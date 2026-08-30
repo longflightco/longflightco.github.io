@@ -70,24 +70,158 @@
   var yr = document.querySelectorAll("[data-year]");
   yr.forEach(function (el) { el.textContent = new Date().getFullYear(); });
 
-  /* ---------- Cart → Shopify checkout (Option C) ---------- */
-  // Shopify storefront that owns the cart + checkout. If you later move the
-  // store to a different domain (e.g. shop.longflight.shop), change ONLY this.
+  /* ---------- On-site cart (checks out to Shopify) ---------- */
+  // The cart lives in the browser (localStorage) so shoppers can collect items
+  // across pages, then check out all at once via one Shopify multi-item link:
+  //   https://SHOP_DOMAIN/cart/{v1}:{q1},{v2}:{q2},...
+  // If the store ever moves domains, change ONLY this line.
   var SHOP_DOMAIN = "shop.longflight.shop";
+  var CART_KEY = "lf_cart_v1";
 
-  // The real cart lives on Shopify (a different domain), so the count can't be
-  // read here — show a plain "Bag" and link it to the Shopify cart page.
-  document.querySelectorAll("[data-cart-count]").forEach(function (c) {
-    if (c.parentElement) c.parentElement.textContent = "Bag";
-  });
+  function readCart() {
+    try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; }
+    catch (e) { return []; }
+  }
+  function writeCart(items) {
+    try { localStorage.setItem(CART_KEY, JSON.stringify(items)); } catch (e) {}
+  }
+  function cartCount(items) {
+    return items.reduce(function (n, it) { return n + it.qty; }, 0);
+  }
+  function money(n) { return "$" + (Math.round(n * 100) / 100).toFixed(2); }
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  var drawer, overlay, itemsEl, subtotalEl, footEl;
+
+  function buildDrawer() {
+    overlay = document.createElement("div");
+    overlay.className = "cart-overlay";
+    drawer = document.createElement("aside");
+    drawer.className = "cart-drawer";
+    drawer.setAttribute("aria-label", "Shopping bag");
+    drawer.setAttribute("aria-hidden", "true");
+    drawer.innerHTML =
+      '<div class="cart-drawer__head"><h2>Your bag</h2>' +
+        '<button class="cart-drawer__close" type="button" aria-label="Close bag">&times;</button></div>' +
+      '<div class="cart-drawer__body"></div>' +
+      '<div class="cart-drawer__foot">' +
+        '<div class="cart-drawer__row"><span>Subtotal</span><span class="cart-drawer__subtotal">$0.00</span></div>' +
+        '<p class="cart-drawer__note">Taxes and shipping calculated at checkout.</p>' +
+        '<button class="btn cart-drawer__checkout" type="button">Checkout</button>' +
+        '<button class="cart-drawer__continue" type="button">Continue shopping</button>' +
+      '</div>';
+    document.body.appendChild(overlay);
+    document.body.appendChild(drawer);
+    itemsEl = drawer.querySelector(".cart-drawer__body");
+    subtotalEl = drawer.querySelector(".cart-drawer__subtotal");
+    footEl = drawer.querySelector(".cart-drawer__foot");
+
+    overlay.addEventListener("click", closeCart);
+    drawer.querySelector(".cart-drawer__close").addEventListener("click", closeCart);
+    drawer.querySelector(".cart-drawer__continue").addEventListener("click", closeCart);
+    drawer.querySelector(".cart-drawer__checkout").addEventListener("click", checkout);
+    itemsEl.addEventListener("click", function (e) {
+      var row = e.target.closest("[data-id]");
+      if (!row) return;
+      var id = row.getAttribute("data-id");
+      if (e.target.closest("[data-cart-remove]")) bumpQty(id, -1e9);
+      else if (e.target.closest("[data-cart-inc]")) bumpQty(id, 1);
+      else if (e.target.closest("[data-cart-dec]")) bumpQty(id, -1);
+    });
+  }
+
+  function openCart() { if (drawer) { renderCart(); document.body.classList.add("cart-open"); drawer.setAttribute("aria-hidden", "false"); document.body.style.overflow = "hidden"; } }
+  function closeCart() { if (drawer) { document.body.classList.remove("cart-open"); drawer.setAttribute("aria-hidden", "true"); document.body.style.overflow = ""; } }
+
+  function renderCount() {
+    var n = cartCount(readCart());
+    document.querySelectorAll("[data-cart-count]").forEach(function (c) { c.textContent = n; });
+  }
+
+  function renderCart() {
+    var items = readCart();
+    if (!items.length) {
+      itemsEl.innerHTML = '<p class="cart-empty">Your bag is empty.</p>';
+      footEl.classList.add("is-empty");
+      subtotalEl.textContent = money(0);
+      renderCount();
+      return;
+    }
+    footEl.classList.remove("is-empty");
+    var sub = 0;
+    itemsEl.innerHTML = items.map(function (it) {
+      sub += it.price * it.qty;
+      var img = it.image ? '<a class="cart-item__img" href="' + esc(it.url) + '"><img src="' + esc(it.image) + '" alt="" /></a>' : '<span class="cart-item__img"></span>';
+      return '<div class="cart-item" data-id="' + esc(it.id) + '">' +
+        img +
+        '<div class="cart-item__info">' +
+          '<a class="cart-item__name" href="' + esc(it.url) + '">' + esc(it.name) + '</a>' +
+          (it.variant ? '<div class="cart-item__variant">' + esc(it.variant) + '</div>' : '') +
+          '<div class="cart-item__ctl">' +
+            '<div class="cart-qty">' +
+              '<button type="button" data-cart-dec aria-label="Decrease quantity">&minus;</button>' +
+              '<span class="cart-qty__v">' + it.qty + '</span>' +
+              '<button type="button" data-cart-inc aria-label="Increase quantity">+</button>' +
+            '</div>' +
+            '<span class="cart-item__price">' + money(it.price * it.qty) + '</span>' +
+          '</div>' +
+        '</div>' +
+        '<button class="cart-item__remove" type="button" data-cart-remove aria-label="Remove item">Remove</button>' +
+      '</div>';
+    }).join("");
+    subtotalEl.textContent = money(sub);
+    renderCount();
+  }
+
+  function addItem(item) {
+    var items = readCart(), found = null;
+    for (var i = 0; i < items.length; i++) { if (items[i].id === item.id) { found = items[i]; break; } }
+    if (found) found.qty += item.qty; else items.push(item);
+    writeCart(items);
+    renderCount();
+  }
+  function bumpQty(id, delta) {
+    var items = readCart();
+    for (var i = 0; i < items.length; i++) {
+      if (items[i].id === id) {
+        items[i].qty += delta;
+        if (items[i].qty < 1) items.splice(i, 1);
+        break;
+      }
+    }
+    writeCart(items);
+    renderCart();
+  }
+  function checkout() {
+    var items = readCart();
+    if (!items.length) return;
+    var path = items.map(function (it) { return it.id + ":" + it.qty; }).join(",");
+    window.location.href = "https://" + SHOP_DOMAIN + "/cart/" + path;
+  }
+
+  buildDrawer();
+  renderCount();
+
+  // Bag button(s) open the on-site drawer — never navigate away to Shopify.
   document.querySelectorAll(".nav__cart").forEach(function (el) {
     el.style.cursor = "pointer";
-    el.addEventListener("click", function () {
-      window.location.href = "https://" + SHOP_DOMAIN + "/cart";
-    });
+    el.addEventListener("click", function (e) { e.preventDefault(); openCart(); });
+  });
+  // Mobile menu "Bag (N)" line also opens the drawer.
+  var mfoot = document.querySelector(".nav__mobile-foot [data-cart-count]");
+  if (mfoot && mfoot.parentElement) {
+    mfoot.parentElement.style.cursor = "pointer";
+    mfoot.parentElement.addEventListener("click", function () { setMenu(false); openCart(); });
+  }
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && document.body.classList.contains("cart-open")) closeCart();
   });
 
-  // PDP: selected option(s) → exact Shopify variant → straight to checkout.
+  // PDP: selected option(s) → exact Shopify variant → add to the on-site bag.
   // Reads every option group (Colour + size selectors) in DOM order and joins
   // them into the variant key, e.g. "Grey|M|L" or "Grey|M" or "M".
   var lfVariants = document.querySelector("[data-lf-variants]");
@@ -96,11 +230,14 @@
     try { VMAP = JSON.parse(lfVariants.textContent); } catch (e) { VMAP = null; }
     if (VMAP) {
       var optionGroups = Array.prototype.slice.call(document.querySelectorAll(".pdp__info .sizes"));
-      var selectedVariant = function () {
-        var parts = optionGroups.map(function (g) {
+      var selectedParts = function () {
+        return optionGroups.map(function (g) {
           var b = g.querySelector('[aria-pressed="true"]');
           return b ? b.textContent.trim() : null;
         });
+      };
+      var selectedVariant = function () {
+        var parts = selectedParts();
         if (parts.indexOf(null) !== -1) return null;
         return VMAP[parts.join("|")] || null;
       };
@@ -109,12 +246,40 @@
         var v = i ? parseInt(i.value, 10) : 1;
         return (isNaN(v) || v < 1) ? 1 : v;
       };
+      var pdpName = function () {
+        var h = document.querySelector(".pdp__info h1");
+        return h ? h.textContent.trim() : "Item";
+      };
+      var pdpPrice = function () {
+        var p = document.querySelector(".pdp__price");
+        var m = p && p.textContent.match(/\$([0-9]+(?:\.[0-9]{1,2})?)/);
+        return m ? parseFloat(m[1]) : 0;
+      };
+      var pdpImage = function () {
+        var hero = document.querySelector(".pdp__gallery .media.is-hero img");
+        if (!hero) {
+          var vis = Array.prototype.slice.call(document.querySelectorAll(".pdp__gallery .media"))
+            .filter(function (m) { return m.style.display !== "none"; });
+          hero = (vis[0] && vis[0].querySelector("img")) || document.querySelector(".pdp__gallery img");
+        }
+        return hero ? hero.getAttribute("src") : "";
+      };
       document.querySelectorAll("[data-add-to-cart]").forEach(function (btn) {
         btn.addEventListener("click", function (e) {
           e.preventDefault();
           var v = selectedVariant();
           if (!v) return;
-          window.location.href = "https://" + SHOP_DOMAIN + "/cart/" + v + ":" + currentQty();
+          var parts = selectedParts().filter(Boolean);
+          addItem({
+            id: String(v),
+            name: pdpName(),
+            variant: parts.join(" / "),
+            price: pdpPrice(),
+            qty: currentQty(),
+            image: pdpImage(),
+            url: (window.location.pathname.split("/").pop() || "index.html")
+          });
+          openCart();
         });
       });
     }
