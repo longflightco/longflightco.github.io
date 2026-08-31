@@ -590,6 +590,10 @@ button.link-underline { border: 0; background-color: transparent; padding: 0 0 2
 .pdp__meta summary::after { content: "+"; font-size: 1.3rem; color: var(--graphite); transition: transform 0.3s var(--ease); }
 .pdp__meta details[open] summary::after { transform: rotate(45deg); }
 .pdp__meta p { margin: 0.9rem 0 0.2rem; color: var(--graphite); font-size: 0.95rem; }
+/* On dark sections, lighten the accordion text/dividers so they stay readable */
+.section--dark .pdp__meta p { color: rgba(255, 255, 255, 0.72); }
+.section--dark .pdp__meta details { border-bottom-color: var(--line-invert); }
+.section--dark .pdp__meta summary::after { color: rgba(255, 255, 255, 0.55); }
 
 /* Sticky add-to-cart bar */
 .buybar {
