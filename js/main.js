@@ -217,6 +217,14 @@
     mfoot.parentElement.style.cursor = "pointer";
     mfoot.parentElement.addEventListener("click", function () { setMenu(false); openCart(); });
   }
+  // Arriving via ?cart=open (e.g. the "Bag" link on Shopify's checkout, which we
+  // redirect back here) lands the shopper on our site with the bag showing.
+  if (/[?&]cart=open\b/.test(window.location.search)) {
+    openCart();
+    if (window.history && history.replaceState) {
+      history.replaceState(null, "", window.location.pathname + window.location.hash);
+    }
+  }
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape" && document.body.classList.contains("cart-open")) closeCart();
   });
