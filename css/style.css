@@ -737,3 +737,15 @@ body.cart-open .cart-drawer { transform: translateX(0); }
 .cart-drawer__foot.is-empty .cart-drawer__row,
 .cart-drawer__foot.is-empty .cart-drawer__note,
 .cart-drawer__foot.is-empty .cart-drawer__checkout { display: none; }
+
+/* ---------- Currency toggle in nav ---------- */
+.nav__currency {
+  background: none; border: 1px solid var(--line); color: inherit;
+  border-radius: 999px; padding: 0.4rem 0.7rem; margin-right: 0.5rem;
+  font-family: var(--body); font-size: 0.8rem; letter-spacing: 0.02em;
+  cursor: pointer; white-space: nowrap; line-height: 1;
+  transition: border-color 0.2s var(--ease), background 0.2s var(--ease);
+}
+.nav__currency:hover { border-color: currentColor; }
+.nav.is-over-dark .nav__currency { border-color: rgba(255, 255, 255, 0.3); }
+@media (max-width: 560px) { .nav__currency { padding: 0.35rem 0.55rem; font-size: 0.75rem; margin-right: 0.35rem; } }

@@ -95,6 +95,17 @@
     });
   }
 
+  // Currency: base prices are CAD; USD is a display conversion using the exact
+  // fixed prices set in Shopify Markets. Checkout currency is still decided by
+  // Shopify from the shopper's location.
+  var CUR_KEY = "lf_currency";
+  function getCur() { try { return localStorage.getItem(CUR_KEY) === "USD" ? "USD" : "CAD"; } catch (e) { return "CAD"; } }
+  var USD_UNIT = { "119.99": 89, "59.99": 45, "159.99": 118, "90.99": 67, "74.99": 56, "44.99": 34, "55.99": 42 };
+  function convertUnit(n) {
+    if (getCur() === "USD") { var u = USD_UNIT[(Math.round(n * 100) / 100).toFixed(2)]; return (u != null) ? u : n; }
+    return n;
+  }
+
   var drawer, overlay, itemsEl, subtotalEl, footEl;
 
   function buildDrawer() {
@@ -154,7 +165,7 @@
     footEl.classList.remove("is-empty");
     var sub = 0;
     itemsEl.innerHTML = items.map(function (it) {
-      sub += it.price * it.qty;
+      sub += convertUnit(it.price) * it.qty;
       var img = it.image ? '<a class="cart-item__img" href="' + esc(it.url) + '"><img src="' + esc(it.image) + '" alt="" /></a>' : '<span class="cart-item__img"></span>';
       return '<div class="cart-item" data-id="' + esc(it.id) + '">' +
         img +
@@ -167,7 +178,7 @@
               '<span class="cart-qty__v">' + it.qty + '</span>' +
               '<button type="button" data-cart-inc aria-label="Increase quantity">+</button>' +
             '</div>' +
-            '<span class="cart-item__price">' + money(it.price * it.qty) + '</span>' +
+            '<span class="cart-item__price">' + money(convertUnit(it.price) * it.qty) + '</span>' +
           '</div>' +
         '</div>' +
         '<button class="cart-item__remove" type="button" data-cart-remove aria-label="Remove item">Remove</button>' +
@@ -258,11 +269,13 @@
         var h = document.querySelector(".pdp__info h1");
         return h ? h.textContent.trim() : "Item";
       };
-      var pdpPrice = function () {
+      // Capture the CAD price now (before any USD display swap) so the cart
+      // always stores the base CAD price regardless of the display currency.
+      var pdpPriceCad = (function () {
         var p = document.querySelector(".pdp__price");
         var m = p && p.textContent.match(/\$([0-9]+(?:\.[0-9]{1,2})?)/);
         return m ? parseFloat(m[1]) : 0;
-      };
+      })();
       var pdpImage = function () {
         var hero = document.querySelector(".pdp__gallery .media.is-hero img");
         if (!hero) {
@@ -282,7 +295,7 @@
             id: String(v),
             name: pdpName(),
             variant: parts.join(" / "),
-            price: pdpPrice(),
+            price: pdpPriceCad,
             qty: currentQty(),
             image: pdpImage(),
             url: (window.location.pathname.split("/").pop() || "index.html")
@@ -292,6 +305,44 @@
       });
     }
   }
+
+  /* ---------- Currency toggle: CAD (base) / USD display ---------- */
+  (function currencyToggle() {
+    var USD_TEXT = [
+      ["$119.99", "$89.00"], ["$59.99", "$45.00"], ["$179.98", "$133.00"], ["$159.99", "$118.00"],
+      ["$100.98", "$78.00"], ["$90.99", "$67.00"], ["$74.99", "$56.00"], ["$44.99", "$34.00"],
+      ["$55.99", "$42.00"], ["$20 less", "$15 less"], ["$10 less", "$11 less"], ["CAD", "USD"]
+    ];
+    function toUsd(s) { for (var i = 0; i < USD_TEXT.length; i++) { s = s.split(USD_TEXT[i][0]).join(USD_TEXT[i][1]); } return s; }
+    // Cache price-bearing text nodes (skip the cart drawer + the toggle itself).
+    var priceNodes = [];
+    var walk = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+    var node;
+    while ((node = walk.nextNode())) {
+      var v = node.nodeValue;
+      if (!(/\$\s?\d/.test(v) || /\bCAD\b/.test(v))) continue;
+      if (node.parentElement && node.parentElement.closest(".cart-drawer, .cart-overlay, .nav__currency")) continue;
+      priceNodes.push({ node: node, cad: v });
+    }
+    function applyText() { var usd = getCur() === "USD"; priceNodes.forEach(function (p) { p.node.nodeValue = usd ? toUsd(p.cad) : p.cad; }); }
+    var btn = null;
+    function updateBtn() { if (btn) btn.textContent = getCur() === "USD" ? "USD $" : "CAD $"; }
+    var right = document.querySelector(".nav__right");
+    if (right) {
+      btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "nav__currency";
+      btn.setAttribute("aria-label", "Change currency");
+      btn.addEventListener("click", function () {
+        var next = getCur() === "USD" ? "CAD" : "USD";
+        try { localStorage.setItem(CUR_KEY, next); } catch (e) {}
+        applyText(); updateBtn();
+        if (drawer) renderCart();
+      });
+      right.insertBefore(btn, right.firstChild);
+    }
+    applyText(); updateBtn();
+  })();
 
   /* ---------- Product option toggles ---------- */
   function groupToggle(selector) {
