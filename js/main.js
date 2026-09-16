@@ -277,6 +277,13 @@
         return m ? parseFloat(m[1]) : 0;
       })();
       var pdpImage = function () {
+        // A page can force a specific cart thumbnail (e.g. the clean white-background
+        // flat) so the bag never shows a cover-cropped model shot as the hero.
+        var override = document.querySelector("[data-cart-image]");
+        if (override) {
+          var ci = override.getAttribute("data-cart-image");
+          if (ci) return ci;
+        }
         var hero = document.querySelector(".pdp__gallery .media.is-hero img");
         if (!hero) {
           var vis = Array.prototype.slice.call(document.querySelectorAll(".pdp__gallery .media"))
