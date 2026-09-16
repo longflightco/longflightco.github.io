@@ -296,7 +296,7 @@ body.menu-open .nav__mobile { transform: translateY(0); opacity: 1; visibility: 
   gap: clamp(2.5rem, 5vw, 4.5rem); align-items: center;
 }
 @media (min-width: 900px) {
-  .hero--split .hero__inner { grid-template-columns: minmax(0, 1.18fr) minmax(0, 0.82fr); }
+  .hero--split .hero__inner { grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr); }
 }
 .hero__text { display: flex; flex-direction: column; align-items: flex-start; }
 .hero--split .hero__text h1 { max-width: 15ch; font-size: clamp(2.4rem, 4.6vw, 4.4rem); }
@@ -330,6 +330,9 @@ body.menu-open .nav__mobile { transform: translateY(0); opacity: 1; visibility: 
   width: 100%; height: 100%; object-fit: contain; display: block;
   padding: clamp(1rem, 3vw, 2.75rem);
 }
+/* Paired cards: tighter padding so the product fills the frame (reads larger) */
+.hero__visual--pair .hero__card { aspect-ratio: 3 / 4; }
+.hero__visual--pair .hero__card img { padding: clamp(0.35rem, 1vw, 0.8rem); }
 .hero__card:hover { transform: translateY(-6px); box-shadow: 0 44px 90px -30px rgba(18, 22, 26, 0.48), 0 2px 8px rgba(18, 22, 26, 0.06); }
 .hero__card-tag {
   position: absolute; left: clamp(0.9rem, 2vw, 1.4rem); bottom: clamp(0.9rem, 2vw, 1.4rem);
