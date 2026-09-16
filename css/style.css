@@ -295,6 +295,10 @@ body.menu-open .nav__mobile { transform: translateY(0); opacity: 1; visibility: 
 /* Hero product card (right column) */
 .hero__visual { position: relative; width: 100%; max-width: 420px; }
 @media (min-width: 900px) { .hero__visual { max-width: none; } }
+/* Paired hero cards (fall home): hoodie + sweatpants side by side */
+.hero__visual--pair { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(0.7rem, 1.6vw, 1.1rem); max-width: 500px; }
+@media (min-width: 900px) { .hero__visual--pair { max-width: none; } }
+.hero__visual--pair .hero__card-tag { left: clamp(0.6rem, 1.4vw, 1rem); bottom: clamp(0.6rem, 1.4vw, 1rem); padding: 0.4rem 0.7rem; font-size: 0.66rem; }
 .hero__card {
   position: relative; display: block; border-radius: 20px; overflow: hidden;
   background: #fff; aspect-ratio: 4 / 5;
