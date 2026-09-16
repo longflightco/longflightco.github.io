@@ -404,6 +404,9 @@ body.menu-open .nav__mobile { transform: translateY(0); opacity: 1; visibility: 
 @media (min-width: 900px) { .products { grid-template-columns: repeat(3, 1fr); } }
 .products--two { grid-template-columns: 1fr; }
 @media (min-width: 760px) { .products--two { grid-template-columns: repeat(2, 1fr); } }
+/* 4-up shop row (home best sellers): 2 across on mobile, 4 across on desktop */
+.products--four { grid-template-columns: repeat(2, 1fr); }
+@media (min-width: 900px) { .products--four { grid-template-columns: repeat(4, 1fr); } }
 
 .card { display: block; position: relative; }
 .card__media { position: relative; overflow: hidden; border-radius: var(--radius); background: var(--mist); aspect-ratio: 1 / 1; }
