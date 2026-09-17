@@ -333,6 +333,12 @@ body.menu-open .nav__mobile { transform: translateY(0); opacity: 1; visibility: 
 /* Paired cards: tighter padding so the product fills the frame (reads larger) */
 .hero__visual--pair .hero__card { aspect-ratio: 3 / 4; }
 .hero__visual--pair .hero__card img { padding: clamp(0.3rem, 0.7vw, 0.6rem); }
+/* Mobile: bottom-align both garments to a shared baseline so they look level,
+   and lay the hero trust bullets out 2-and-2. */
+@media (max-width: 899px) {
+  .hero__visual--pair .hero__card img { object-position: center bottom; padding-bottom: 2.4rem; }
+  .hero__trust { display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem 1rem; }
+}
 .hero__card:hover { transform: translateY(-6px); box-shadow: 0 44px 90px -30px rgba(18, 22, 26, 0.48), 0 2px 8px rgba(18, 22, 26, 0.06); }
 .hero__card-tag {
   position: absolute; left: clamp(0.9rem, 2vw, 1.4rem); bottom: clamp(0.9rem, 2vw, 1.4rem);
