@@ -253,15 +253,16 @@ body.menu-open .nav__mobile { transform: translateY(0); opacity: 1; visibility: 
 .nav__mobile-foot { display: flex; justify-content: space-between; align-items: center; color: var(--graphite); font-size: 0.85rem; }
 
 /* ============================================================
-   Trust / benefits bar
+   Benefits bar (home) — icon on top, bold label below, 4-up
    ============================================================ */
-.trustbar { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--paper); }
-.trustbar__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem 2rem; padding-block: clamp(1.15rem, 2.6vw, 1.6rem); }
-.trustbar__item { display: flex; align-items: center; gap: 0.7rem; font-size: 0.85rem; line-height: 1.35; color: var(--ink); letter-spacing: 0.005em; }
-.trustbar__item svg { width: 22px; height: 22px; flex: none; color: var(--ink); }
-@media (max-width: 820px) {
-  .trustbar__grid { grid-template-columns: repeat(2, 1fr); gap: 1rem 1.5rem; }
-  .trustbar__item { font-size: 0.8rem; }
+.benefits { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--paper); }
+.benefits__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem 1rem; padding-block: clamp(1.4rem, 3vw, 2rem); }
+.benefits__item { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.7rem; }
+.benefits__item svg { width: 30px; height: 30px; color: var(--ink); flex: none; }
+.benefits__label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink); line-height: 1.4; max-width: 24ch; }
+@media (max-width: 700px) {
+  .benefits__grid { grid-template-columns: repeat(2, 1fr); gap: 1.75rem 1rem; }
+  .benefits__label { font-size: 0.68rem; }
 }
 
 /* ============================================================
@@ -304,14 +305,6 @@ body.menu-open .nav__mobile { transform: translateY(0); opacity: 1; visibility: 
 .hero__text .hero__actions { margin-top: clamp(1.75rem, 3.5vw, 2.5rem); }
 .hero__text .hero__scroll { margin-top: clamp(2rem, 5vh, 3.25rem); }
 .hero__lead { max-width: 42ch; }
-/* Inline trust points under the hero CTAs */
-.hero__trust {
-  list-style: none; padding: 0; margin: clamp(1.5rem, 3vw, 2rem) 0 0;
-  display: flex; flex-wrap: wrap; gap: 0.55rem 1.4rem;
-  font-size: 0.82rem; letter-spacing: 0.01em; color: var(--graphite);
-}
-.hero__trust li { display: flex; align-items: center; gap: 0.5rem; }
-.hero__trust li::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--ink); opacity: 0.75; flex: none; }
 
 /* Hero product card (right column) */
 .hero__visual { position: relative; width: 100%; max-width: 420px; }
@@ -333,11 +326,9 @@ body.menu-open .nav__mobile { transform: translateY(0); opacity: 1; visibility: 
 /* Paired cards: tighter padding so the product fills the frame (reads larger) */
 .hero__visual--pair .hero__card { aspect-ratio: 3 / 4; }
 .hero__visual--pair .hero__card img { padding: clamp(0.3rem, 0.7vw, 0.6rem); }
-/* Mobile: bottom-align both garments to a shared baseline so they look level,
-   and lay the hero trust bullets out 2-and-2. */
+/* Mobile: bottom-align both garments to a shared baseline so they look level */
 @media (max-width: 899px) {
   .hero__visual--pair .hero__card img { object-position: center bottom; padding-bottom: 2.4rem; }
-  .hero__trust { display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem 1rem; }
 }
 .hero__card:hover { transform: translateY(-6px); box-shadow: 0 44px 90px -30px rgba(18, 22, 26, 0.48), 0 2px 8px rgba(18, 22, 26, 0.06); }
 .hero__card-tag {
