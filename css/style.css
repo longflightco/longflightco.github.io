@@ -330,6 +330,10 @@ body.menu-open .nav__mobile { transform: translateY(0); opacity: 1; visibility: 
 @media (max-width: 899px) {
   .hero__visual--pair .hero__card img { object-position: center bottom; padding-bottom: 2.4rem; }
 }
+/* Black <-> grey crossfade slideshow (both cards in sync) */
+.hero__card img.hero__alt { position: absolute; inset: 0; opacity: 0; animation: heroswap 8s ease-in-out infinite; }
+@keyframes heroswap { 0%, 38% { opacity: 0; } 50%, 88% { opacity: 1; } 100% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .hero__card img.hero__alt { animation: none; } }
 .hero__card:hover { transform: translateY(-6px); box-shadow: 0 44px 90px -30px rgba(18, 22, 26, 0.48), 0 2px 8px rgba(18, 22, 26, 0.06); }
 .hero__card-tag {
   position: absolute; left: clamp(0.9rem, 2vw, 1.4rem); bottom: clamp(0.9rem, 2vw, 1.4rem);
