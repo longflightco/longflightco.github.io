@@ -211,7 +211,21 @@
     var items = readCart();
     if (!items.length) return;
     var path = items.map(function (it) { return it.id + ":" + it.qty; }).join(",");
-    window.location.href = "https://" + SHOP_DOMAIN + "/cart/" + path;
+    if (window.fbq) {
+      fbq("track", "InitiateCheckout", {
+        content_ids: items.map(function (it) { return it.id; }),
+        content_type: "product",
+        num_items: cartCount(items),
+        currency: "CAD",
+        value: items.reduce(function (sum, it) { return sum + it.price * it.qty; }, 0)
+      });
+    }
+    var url = "https://" + SHOP_DOMAIN + "/cart/" + path;
+    // Hand the Meta click id to Shopify's own pixel so it can re-attach this
+    // purchase to the ad click, since that cookie doesn't cross domains.
+    var fbclid = window.lfFbclid && window.lfFbclid();
+    if (fbclid) url += "?fbclid=" + encodeURIComponent(fbclid);
+    window.location.href = url;
   }
 
   buildDrawer();
@@ -298,15 +312,24 @@
           var v = selectedVariant();
           if (!v) return;
           var parts = selectedParts().filter(Boolean);
+          var qty = currentQty();
           addItem({
             id: String(v),
             name: pdpName(),
             variant: parts.join(" / "),
             price: pdpPriceCad,
-            qty: currentQty(),
+            qty: qty,
             image: pdpImage(),
             url: (window.location.pathname.split("/").pop() || "index.html")
           });
+          if (window.fbq) {
+            fbq("track", "AddToCart", {
+              content_ids: [String(v)],
+              content_type: "product",
+              currency: "CAD",
+              value: pdpPriceCad * qty
+            });
+          }
           openCart();
         });
       });
