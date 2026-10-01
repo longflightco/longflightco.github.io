@@ -1,10 +1,8 @@
-/* LongFlight — Meta Pixel base code + ad-click passthrough
-   Fill in PIXEL_ID below (and PIXEL_ID_PLACEHOLDER in every .html file's
-   noscript tag) once the Pixel exists in Meta Events Manager. */
+/* LongFlight — Meta Pixel base code + ad-click passthrough */
 (function () {
   "use strict";
 
-  var PIXEL_ID = "PIXEL_ID_PLACEHOLDER";
+  var PIXEL_ID = "1651419756618654";
 
   /* eslint-disable */
   !function(f,b,e,v,n,t,s)
