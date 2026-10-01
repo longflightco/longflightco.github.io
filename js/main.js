@@ -1,4 +1,4 @@
-/* LongFlight — shared UI behaviors */
+/* LongFlight: shared UI behaviors */
 (function () {
   "use strict";
 
@@ -231,7 +231,7 @@
   buildDrawer();
   renderCount();
 
-  // Bag button(s) open the on-site drawer — never navigate away to Shopify.
+  // Bag button(s) open the on-site drawer, never navigate away to Shopify.
   document.querySelectorAll(".nav__cart").forEach(function (el) {
     el.style.cursor = "pointer";
     el.addEventListener("click", function (e) { e.preventDefault(); openCart(); });

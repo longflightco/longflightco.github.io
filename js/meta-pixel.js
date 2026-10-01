@@ -1,4 +1,4 @@
-/* LongFlight — Meta Pixel base code + ad-click passthrough */
+/* LongFlight: Meta Pixel base code + ad-click passthrough */
 (function () {
   "use strict";
 
@@ -20,7 +20,7 @@
   // The checkout hand-off (in main.js) happens on shop.longflight.shop, a
   // different domain from this site. Meta's own click-id cookie doesn't
   // cross that boundary, so we stash ?fbclid=... here and hand it back to
-  // main.js to append to the Shopify checkout URL — Shopify's own Meta
+  // main.js to append to the Shopify checkout URL. Shopify's own Meta
   // pixel picks it up and re-establishes attribution on its side.
   var FBCLID_KEY = "lf_fbclid";
   var FBCLID_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
