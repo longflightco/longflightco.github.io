@@ -423,6 +423,7 @@ body.menu-open .nav__mobile { transform: translateY(0); opacity: 1; visibility: 
   font-size: 0.68rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
   padding: 0.4rem 0.7rem; border-radius: 100px;
 }
+.card__badge { display: inline-block; margin-top: 0.5rem; padding: 0.2rem 0.6rem; border: 1px solid var(--line); border-radius: 100px; color: var(--graphite); font-size: 0.64rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; line-height: 1.4; }
 .card__meta { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin-top: 1rem; }
 /* Narrow cards: stack name over price so the (nowrap) price never overflows */
 @media (max-width: 560px) { .card__meta { flex-direction: column; align-items: flex-start; gap: 0.15rem; } }
