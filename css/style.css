@@ -256,12 +256,13 @@ body.menu-open .nav__mobile { transform: translateY(0); opacity: 1; visibility: 
    Benefits bar (home): icon on top, bold label below, 4-up
    ============================================================ */
 .benefits { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--paper); }
-.benefits__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem 1rem; padding-block: clamp(1.4rem, 3vw, 2rem); }
+.benefits__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem 1rem; padding-block: clamp(1.4rem, 3vw, 2rem); }
 .benefits__item { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.7rem; }
 .benefits__item svg { width: 30px; height: 30px; color: var(--ink); flex: none; }
 .benefits__label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink); line-height: 1.4; max-width: 24ch; }
 @media (max-width: 700px) {
   .benefits__grid { grid-template-columns: repeat(2, 1fr); gap: 1.75rem 1rem; }
+  .benefits__item:last-child { grid-column: 1 / -1; }
   .benefits__label { font-size: 0.68rem; }
 }
 
