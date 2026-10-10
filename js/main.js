@@ -100,7 +100,7 @@
   // Shopify from the shopper's location.
   var CUR_KEY = "lf_currency";
   function getCur() { try { return localStorage.getItem(CUR_KEY) === "USD" ? "USD" : "CAD"; } catch (e) { return "CAD"; } }
-  var USD_UNIT = { "119.99": 89, "59.99": 45, "159.99": 118, "78.99": 59, "64.99": 49, "47.49": 36, "39.99": 30 };
+  var USD_UNIT = { "119.99": 89, "59.99": 45, "159.99": 118, "78.99": 59, "64.99": 49, "47.49": 36, "39.99": 30, "49.99": 37, "99.99": 75 };
   function convertUnit(n) {
     if (getCur() === "USD") { var u = USD_UNIT[(Math.round(n * 100) / 100).toFixed(2)]; return (u != null) ? u : n; }
     return n;
@@ -342,6 +342,7 @@
       ["$119.99", "$89.00"], ["$59.99", "$45.00"], ["$179.98", "$133.00"], ["$159.99", "$118.00"],
       ["$87.98", "$66.00"], ["$78.99", "$59.00"], ["$74.99", "$56.00"], ["$64.99", "$49.00"],
       ["$55.99", "$42.00"], ["$47.49", "$36.00"], ["$44.99", "$34.00"], ["$39.99", "$30.00"],
+      ["$49.99", "$37.00"], ["$99.99", "$75.00"], ["$114.98", "$86.00"],
       ["CAD", "USD"]
     ];
     function toUsd(s) { for (var i = 0; i < USD_TEXT.length; i++) { s = s.split(USD_TEXT[i][0]).join(USD_TEXT[i][1]); } return s; }
