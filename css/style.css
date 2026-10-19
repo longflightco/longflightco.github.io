@@ -526,6 +526,20 @@ body.menu-open .nav__mobile { transform: translateY(0); opacity: 1; visibility: 
 .policy:first-child { border-top: 0; margin-top: 0; padding-top: 0; }
 .policy p { margin: 0 0 1rem; color: var(--graphite); font-size: 0.98rem; line-height: 1.7; }
 .policy h2 { color: var(--ink); }
+/* FAQ / Help Centre */
+.faq { max-width: 780px; padding-bottom: clamp(3rem, 7vw, 6rem); }
+.faq__group { scroll-margin-top: calc(var(--anno-h) + var(--nav-h) + 1.5rem); margin-top: clamp(2.5rem, 5vw, 3.5rem); }
+.faq__group:first-child { margin-top: 0; }
+.faq__title { font-family: var(--display); font-size: clamp(1.35rem, 2.6vw, 1.7rem); font-weight: 600; letter-spacing: -0.01em; margin: 0 0 0.75rem; color: var(--ink); }
+.faq__list { border-top: 1px solid var(--line-soft); }
+.faq__list details { border-bottom: 1px solid var(--line-soft); }
+.faq__list summary { display: flex; justify-content: space-between; align-items: center; gap: 1.5rem; padding: 1.05rem 0; cursor: pointer; font-weight: 500; font-size: 0.98rem; list-style: none; }
+.faq__list summary::-webkit-details-marker { display: none; }
+.faq__list summary::after { content: "+"; flex: none; font-size: 1.35rem; line-height: 1; color: var(--graphite); }
+.faq__list details[open] summary::after { content: "\2212"; }
+.faq__list summary:hover { color: var(--graphite); }
+.faq__list p { margin: -0.25rem 0 1.15rem; max-width: 62ch; color: var(--graphite); font-size: 0.95rem; line-height: 1.7; }
+.faq__list p a { color: var(--ink); text-decoration: underline; text-underline-offset: 2px; }
 
 /* ============================================================
    Product detail
