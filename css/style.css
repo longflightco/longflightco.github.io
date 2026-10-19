@@ -540,6 +540,10 @@ body.menu-open .nav__mobile { transform: translateY(0); opacity: 1; visibility: 
 .faq__list summary:hover { color: var(--graphite); }
 .faq__list p { margin: -0.25rem 0 1.15rem; max-width: 62ch; color: var(--graphite); font-size: 0.95rem; line-height: 1.7; }
 .faq__list p a { color: var(--ink); text-decoration: underline; text-underline-offset: 2px; }
+/* Product-page FAQ block (above footer) */
+.pdp-faq .faq__title { margin-bottom: 1rem; }
+.pdp-faq__all { display: inline-block; margin-top: 1.5rem; font-size: 0.9rem; }
+.pdp-faq__cta { display: flex; justify-content: center; margin-top: clamp(2rem, 4vw, 2.75rem); }
 
 /* ============================================================
    Product detail
