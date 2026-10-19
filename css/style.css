@@ -424,6 +424,8 @@ body.menu-open .nav__mobile { transform: translateY(0); opacity: 1; visibility: 
   padding: 0.4rem 0.7rem; border-radius: 100px;
 }
 .card__badge { display: inline-block; margin-top: 0.5rem; padding: 0.2rem 0.6rem; border: 1px solid var(--line); border-radius: 100px; color: var(--graphite); font-size: 0.64rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; line-height: 1.4; }
+.card__badges { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.5rem; }
+.card__badges .card__badge { margin-top: 0; }
 .card__meta { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin-top: 1rem; }
 /* Narrow cards: stack name over price so the (nowrap) price never overflows */
 @media (max-width: 560px) { .card__meta { flex-direction: column; align-items: flex-start; gap: 0.15rem; } }
@@ -558,8 +560,12 @@ body.menu-open .nav__mobile { transform: translateY(0); opacity: 1; visibility: 
 .trust-strip li { display: flex; align-items: flex-start; gap: 0.55rem; min-width: 0; }
 .trust-strip svg { flex: none; width: 20px; height: 20px; color: var(--ink); margin-top: 1px; }
 .trust-strip span { display: flex; flex-direction: column; font-size: 0.72rem; line-height: 1.35; color: var(--graphite); }
-.trust-strip b { font-size: 0.8rem; font-weight: 600; color: var(--ink); white-space: nowrap; }
-@media (max-width: 340px) { .trust-strip { grid-template-columns: minmax(0, 1fr); } }
+.trust-strip b { font-size: 0.8rem; font-weight: 600; color: var(--ink); }
+@media (max-width: 600px) {
+  .trust-strip { gap: 0.5rem; }
+  .trust-strip li { flex-direction: column; align-items: center; text-align: center; gap: 0.35rem; }
+  .trust-strip span { align-items: center; }
+}
 .complete-set { scroll-margin-top: calc(var(--anno-h) + var(--nav-h) + 1rem); }
 .complete-set__card { display: grid; grid-template-columns: minmax(0, 1fr); border: 1px solid var(--line-soft); border-radius: var(--radius); overflow: hidden; max-width: 980px; }
 .complete-set__media { position: relative; display: block; aspect-ratio: 1 / 1; background: var(--mist); overflow: hidden; }
@@ -838,3 +844,20 @@ body.cart-open .cart-drawer { transform: translateX(0); }
 .nav__currency:hover { border-color: currentColor; }
 .nav.is-over-dark .nav__currency { border-color: rgba(255, 255, 255, 0.3); }
 @media (max-width: 560px) { .nav__currency { padding: 0.35rem 0.55rem; font-size: 0.75rem; margin-right: 0.35rem; } }
+
+/* ============================================================
+   Mobile tap targets + accordion icon (audit 2026-10-19)
+   Hit areas grow invisibly via ::after so the look is unchanged.
+   ============================================================ */
+.pdp__meta summary::after { display: inline-block; width: 1em; line-height: 1; text-align: center; transform-origin: 50% 50%; }
+@media (max-width: 760px) {
+  .nav__currency, .pdp__dots button, .pdp__linkrow .link-underline, .pdp-faq__all, .set-nudge__link, .policy-toc a { position: relative; }
+  .nav__currency::after { content: ""; position: absolute; inset: -10px -4px; }
+  .nav__cart { min-width: 44px; justify-content: center; }
+  .pdp__dots { gap: 0.75rem; }
+  .pdp__dots button::after { content: ""; position: absolute; inset: -12px -7px; }
+  .pdp__linkrow .link-underline::after, .pdp-faq__all::after, .set-nudge__link::after { content: ""; position: absolute; inset: -10px -6px; }
+  .policy-toc { gap: 0.25rem 1.25rem; }
+  .policy-toc a { padding-block: 0.45rem; }
+  .hero__card-tag { font-size: 0.8rem; }
+}
