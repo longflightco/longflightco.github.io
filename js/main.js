@@ -353,10 +353,16 @@
     while ((node = walk.nextNode())) {
       var v = node.nodeValue;
       if (!(/\$\s?\d/.test(v) || /\bCAD\b/.test(v))) continue;
-      if (node.parentElement && node.parentElement.closest(".cart-drawer, .cart-overlay, .nav__currency")) continue;
+      if (node.parentElement && node.parentElement.closest(".cart-drawer, .cart-overlay, .nav__currency, [data-usd]")) continue;
       priceNodes.push({ node: node, cad: v });
     }
-    function applyText() { var usd = getCur() === "USD"; priceNodes.forEach(function (p) { p.node.nodeValue = usd ? toUsd(p.cad) : p.cad; }); }
+    // Elements with explicit data-cad / data-usd amounts (e.g. set "add for $X more") swap directly.
+    var pairNodes = Array.prototype.slice.call(document.querySelectorAll("[data-usd][data-cad]"));
+    function applyText() {
+      var usd = getCur() === "USD";
+      priceNodes.forEach(function (p) { p.node.nodeValue = usd ? toUsd(p.cad) : p.cad; });
+      pairNodes.forEach(function (el) { el.textContent = el.getAttribute(usd ? "data-usd" : "data-cad"); });
+    }
     var btn = null;
     function updateBtn() { if (btn) btn.textContent = getCur() === "USD" ? "USD $" : "CAD $"; }
     var right = document.querySelector(".nav__right");
