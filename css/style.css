@@ -546,6 +546,11 @@ body.menu-open .nav__mobile { transform: translateY(0); opacity: 1; visibility: 
 .pdp-faq .faq__title { margin-bottom: 1rem; }
 .pdp-faq__all { display: inline-block; margin-top: 1.5rem; font-size: 0.9rem; }
 .pdp-faq__cta { display: flex; justify-content: center; margin-top: clamp(2rem, 4vw, 2.75rem); }
+/* Reviews prompt (Judge.me form lives on the Shopify product page) */
+.pdp-reviews { padding-bottom: 0; }
+.pdp-reviews__card { display: flex; flex-direction: column; align-items: flex-start; gap: 0.6rem; padding: clamp(1.25rem, 3vw, 1.75rem); border: 1px solid var(--line-soft); border-radius: var(--radius); }
+.pdp-reviews__lead { margin: 0; font-weight: 500; font-size: 1rem; }
+.pdp-reviews__sub { margin: 0 0 0.4rem; color: var(--graphite); font-size: 0.9rem; }
 /* Complete-the-set nudge (above Add to bag) + section */
 .set-nudge { margin: 1.25rem 0 1rem; padding: 0.9rem 1rem; border: 1px solid var(--line-soft); border-radius: 12px; }
 .set-nudge__top { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 0.45rem; }
