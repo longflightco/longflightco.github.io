@@ -295,12 +295,13 @@
           <h2 class="display-m" style="margin-top:1rem">Early access to<br />every drop.</h2>
         </div>
         <div class="reveal" data-delay="1">
-          <form novalidate>
+          <form data-signup data-source="Homepage boarding list" novalidate>
             <div class="field">
               <label for="nl-email" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Email address</label>
-              <input id="nl-email" type="email" inputmode="email" placeholder="you@email.com" autocomplete="email" />
+              <input id="nl-email" name="email" type="email" inputmode="email" placeholder="you@email.com" autocomplete="email" required />
               <button class="btn btn--light" type="submit">Join <span class="btn__arrow" aria-hidden="true">→</span></button>
             </div>
+            <p class="signup__msg" role="status" aria-live="polite"></p>
           </form>
           <small>Occasional emails about new pieces and restocks. No noise. Unsubscribe anytime.</small>
         </div>

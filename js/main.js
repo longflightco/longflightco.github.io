@@ -535,6 +535,42 @@
     barObserver.observe(buybar);
   }
 
+  /* ---------- Email signup → Klaviyo list (client subscriptions API) ---------- */
+  // Public values only: the company ID is Klaviyo's public site key; no private key is used here.
+  var KLAVIYO_COMPANY_ID = "SFxkhk";
+  var KLAVIYO_LIST_ID = "XewrkR";
+  document.querySelectorAll("form[data-signup]").forEach(function (form) {
+    var input = form.querySelector('input[type="email"]');
+    var btn = form.querySelector('button[type="submit"]');
+    var msg = form.querySelector(".signup__msg");
+    function say(text, ok) { if (msg) { msg.textContent = text; msg.classList.toggle("is-error", !ok); } }
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var email = (input && input.value || "").trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { say("Please enter a valid email address.", false); if (input) input.focus(); return; }
+      if (!KLAVIYO_COMPANY_ID || !KLAVIYO_LIST_ID) { say("Signup is being set up. Please try again soon.", false); return; }
+      if (btn) btn.disabled = true;
+      say("Joining…", true);
+      fetch("https://a.klaviyo.com/client/subscriptions?company_id=" + encodeURIComponent(KLAVIYO_COMPANY_ID), {
+        method: "POST",
+        headers: { "Content-Type": "application/vnd.api+json", "revision": "2025-07-15" },
+        body: JSON.stringify({ data: { type: "subscription", attributes: {
+          custom_source: form.getAttribute("data-source") || "Website signup",
+          profile: { data: { type: "profile", attributes: { email: email,
+            subscriptions: { email: { marketing: { consent: "SUBSCRIBED" } } } } } }
+        }, relationships: { list: { data: { type: "list", id: KLAVIYO_LIST_ID } } } } })
+      }).then(function (res) {
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        say("Almost there! Check your inbox (and spam folder) to confirm.", true);
+        form.reset();
+        try { if (window.fbq) fbq("track", "Lead"); } catch (err) {}
+        try { if (window.gtag) gtag("event", "sign_up", { method: form.getAttribute("data-source") || "website" }); } catch (err) {}
+      }).catch(function () {
+        say("Something went wrong. Please try again in a moment.", false);
+      }).then(function () { if (btn) btn.disabled = false; });
+    });
+  });
+
   /* ---------- Contact form → opens a pre-filled email ---------- */
   var contactForm = document.querySelector(".contact form");
   if (contactForm) {
